@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
-	// "gopl.io/ch5/outline"
+	"log"
+	"os"
+
+	"gopl.io/ch5/outline"
 	// "gopl.io/ch5/findlinks"
 	// "gopl.io/ch5/wait"
-	"gopl.io/ch5/toposort"
+	// "gopl.io/ch5/toposort"
 )
 
 var prereqs = map[string][]string{
@@ -21,6 +24,29 @@ var prereqs = map[string][]string{
 	"programming languages": {"data structures", "computer organization"},
 }
 
+func breadthFirst(f func(item string) []string, worklist []string) {
+	seen := make(map[string]bool)
+	for len(worklist) > 0 {
+		items := worklist
+		worklist = nil
+		for _, item := range items {
+			if !seen[item] {
+				seen[item] = true
+				worklist = append(worklist, f(item)...)
+			}
+		}
+	}
+}
+
+func crawl(url string) []string {
+	fmt.Println(url)
+	list, err := outline.Extract(url)
+	if err != nil {
+		log.Print(err)
+	}
+	return list
+}
+
 func main() {
 	// findlinks.FindLinks1()
 	// outline.ShowOutLine()
@@ -34,7 +60,8 @@ func main() {
 	// 	}
 	// }
 	// wait.WaitForServer("http://www.xeowowowowxx.com")
-	for i, course := range toposort.TopoSort(prereqs) {
-		fmt.Printf("%d:\t%s\n", i+1, course)
-	}
+	// for i, course := range toposort.TopoSort(prereqs) {
+	// 	fmt.Printf("%d:\t%s\n", i+1, course)
+	// }
+	breadthFirst(crawl, os.Args[1:])
 }
