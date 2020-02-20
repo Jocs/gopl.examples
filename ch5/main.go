@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"time"
 
 	"gopl.io/ch5/outline"
 	// "gopl.io/ch5/findlinks"
@@ -47,6 +48,20 @@ func crawl(url string) []string {
 	return list
 }
 
+func trace(msg string) func() {
+	start := time.Now()
+	log.Printf("enter %s", msg)
+
+	return func() {
+		log.Printf("exist %s (%s)", msg, time.Since(start))
+	}
+}
+
+func bigSlowOperation() {
+	defer trace("bigSlowOperation")()
+	time.Sleep(10 * time.Second)
+}
+
 func main() {
 	// findlinks.FindLinks1()
 	// outline.ShowOutLine()
@@ -64,4 +79,6 @@ func main() {
 	// 	fmt.Printf("%d:\t%s\n", i+1, course)
 	// }
 	breadthFirst(crawl, os.Args[1:])
+	outline.Title("http://www.baidu.com")
+	bigSlowOperation()
 }
