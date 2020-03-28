@@ -41,6 +41,7 @@ func clientWriter(conn net.Conn, ch <-chan string) {
 func handleConn(conn net.Conn) {
 	ch := make(chan string)
 	go clientWriter(conn, ch)
+
 	who := conn.RemoteAddr().String()
 	ch <- "You are " + who
 	messages <- who + " has arrived"
